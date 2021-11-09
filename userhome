@@ -1,0 +1,59 @@
+#!/bin/bash
+
+opt_sep=
+opt_f=
+file=
+usr=
+login=
+
+for arg in "$@"
+do
+	if [[ -z "$opt_sep" && "${arg:0:1}" == "-" ]]
+	then
+		case $arg in
+		--) opt_sep=1
+		    ;;
+		-f) opt_f=1
+		    ;;
+		*)  echo "$0: Invalid option '$arg', only supported options are [-f file][login]" >&2
+		    exit 2
+		    ;;
+		esac
+	elif [[ "$opt_f" && -z "$file" ]]
+	then
+		file="$arg"
+		if [[ ! -r "$file" ]]
+		then
+			echo "$0: Cannot read file" >&2
+			exit 2
+		fi
+	elif [[ -z "$login" ]]
+	then
+		login="$arg"
+	else
+		echo "$0: Too much options, only supported options are [-f file][login]" >&2
+		exit 2
+	fi
+done
+
+if [[ -z "$file" ]]
+then
+	file="/etc/passwd"
+fi
+if [[ -z "$login" ]]
+then
+	login="$USER"
+fi
+
+val=$(grep "$login" "$file")
+
+if [[ -z "$val" ]]
+then
+	echo "$0: No such user found" >&2
+	exit 1
+fi
+
+val="${val%:/*}"
+val="${val##*:}"
+echo "$val"
+exit 0
