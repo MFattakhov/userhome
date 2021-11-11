@@ -15,7 +15,7 @@ do
 		    ;;
 		-f) opt_f=1
 		    ;;
-		*)  echo "$0: Invalid option '$arg', only supported options are [-f file][login]" >&2
+		 *) echo "$0: Invalid option '$arg', only supported options are [-f file][login]" >&2
 		    exit 2
 		    ;;
 		esac
@@ -45,7 +45,7 @@ then
 	login="$USER"
 fi
 
-val=$(grep "$login" "$file")
+val=$(grep -- "$login" "$file")
 
 if [[ -z "$val" ]]
 then
