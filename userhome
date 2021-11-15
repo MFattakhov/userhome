@@ -45,7 +45,7 @@ then
 	login="$USER"
 fi
 
-val=$(grep -- "$login" "$file")
+val=$(grep -- "^$login:" "$file")
 
 if [[ -z "$val" ]]
 then
